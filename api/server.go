@@ -12,6 +12,8 @@ import (
 	"mini-rest-api/usecase/user"
 	"net/http"
 	"time"
+
+	_ "mini-rest-api/docs"
 )
 
 // Server Struct
