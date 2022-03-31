@@ -3,7 +3,12 @@ package api
 import (
 	"github.com/labstack/echo/v4"
 	echoSwagger "github.com/swaggo/echo-swagger"
+	"mini-rest-api/api/controller"
 	"mini-rest-api/api/handler"
+	"mini-rest-api/common/helper"
+	external "mini-rest-api/infra"
+	"mini-rest-api/repository/postgres"
+	"mini-rest-api/usecase/user"
 	"net/http"
 	"time"
 )
@@ -21,6 +26,16 @@ func NewServer(e *echo.Echo) *Server {
 }
 
 func (server *Server) InitializeServer() {
+	newDB := external.NewGormDB()
+
+	helperInterface := helper.NewHelperFunction()
+	repoUser := postgres.NewUserRepository(newDB)
+	userUC := user.NewUserImplementation(repoUser, helperInterface)
+	userController := controller.NewUserController(userUC)
+
+	apiGroup := server.Route.Group("/api")
+
+	userController.Route(apiGroup)
 
 	server.Route.GET("/swagger/*", echoSwagger.WrapHandler)
 

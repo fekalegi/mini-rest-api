@@ -7,6 +7,7 @@ import (
 	"mini-rest-api/common"
 	"mini-rest-api/common/command"
 	"mini-rest-api/common/exception"
+	"mini-rest-api/domain"
 )
 
 var dbInstance *gorm.DB
@@ -25,7 +26,7 @@ func NewGormDB() *gorm.DB {
 		}
 
 		if common.IsMigrate && dbInstance == nil {
-			err = DBInstance.AutoMigrate()
+			err = DBInstance.AutoMigrate(&domain.User{})
 			exception.PanicIfNeeded(err)
 
 			if err == nil {

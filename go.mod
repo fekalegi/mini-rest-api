@@ -3,7 +3,9 @@ module mini-rest-api
 go 1.17
 
 require (
+	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/go-playground/validator/v10 v10.10.1
+	github.com/joho/godotenv v1.4.0
 	github.com/labstack/echo/v4 v4.1.14
 	github.com/swaggo/echo-swagger v1.3.0
 	gopkg.in/jeevatkm/go-model.v1 v1.1.0

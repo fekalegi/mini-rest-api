@@ -1,0 +1,74 @@
+package controller
+
+import (
+	"fmt"
+	"github.com/labstack/echo/v4"
+	"github.com/labstack/echo/v4/middleware"
+	"mini-rest-api/api/middlewares"
+	"mini-rest-api/common/dto"
+	"mini-rest-api/common/models"
+	"mini-rest-api/usecase"
+	"strconv"
+)
+
+// UserController : Controller for User Api
+type userController struct {
+	userService usecase.UserService
+}
+
+// NewUserController : Instance for register  UserService
+func NewUserController(userService usecase.UserService) *userController {
+	return &userController{userService: userService}
+}
+
+// Route : Setting User Route
+func (u *userController) Route(group *echo.Group) {
+	group.POST("/user/authentications", u.LoginAuth)
+	group.PUT("/user/authentications", u.RefreshAuth, middleware.KeyAuth(middlewares.AuthCheck))
+}
+
+// LoginAuth godoc
+// @Summary Login Authentication
+// @Description This endpoint for Login Authentication
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param services body dto.RequestLogin true "Login Authentication"
+// @Success 200 {object} models.JSONResponsesSwaggerSucceed
+// @Router /authentications [post]
+func (u *userController) LoginAuth(ctx echo.Context) error {
+	request := dto.RequestLogin{}
+	err := models.ValidateRequest(ctx, &request)
+
+	if err != nil {
+		return err
+	}
+
+	result, err := u.userService.CheckLogin(request.Username, request.Password)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(result.Code, result)
+}
+
+// RefreshAuth godoc
+// @Summary Refresh Authentication
+// @Description This endpoint for Refresh Authentication
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.JSONResponsesSwaggerSucceed
+// @Router /authentications [put]
+func (u *userController) RefreshAuth(ctx echo.Context) error {
+	userID := ctx.Get("user_id")
+	conv, err := strconv.Atoi(fmt.Sprint(userID))
+	if err != nil {
+		return err
+	}
+
+	result, err := u.userService.RefreshToken(conv)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(result.Code, result)
+}
