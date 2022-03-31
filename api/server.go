@@ -21,6 +21,7 @@ func NewServer(e *echo.Echo) *Server {
 }
 
 func (server *Server) InitializeServer() {
+
 	server.Route.GET("/swagger/*", echoSwagger.WrapHandler)
 
 	handler.UseCustomValidatorHandler(server.Route)
