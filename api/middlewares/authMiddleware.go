@@ -2,6 +2,7 @@ package middlewares
 
 import (
 	"errors"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"mini-rest-api/common/exception"
 	"mini-rest-api/common/helper"
@@ -32,13 +33,19 @@ func AuthCheck(token string, c echo.Context) (valid bool, err error) {
 		return false, err
 	}
 
-	user, errGetUser := userRepo.FindUserByID(userID)
+	authID, err := uuid.Parse(tokenClaim.AuthID)
+	if err != nil {
+		return false, err
+	}
+
+	user, errGetUser := userRepo.FindUserByIDAndAuthID(userID, authID)
 	if errGetUser != nil {
 		exception.PanicIfNeeded(err)
 	}
 	if user != nil {
 		c.Set("user_id", user.ID)
 		c.Set("username", user.Username)
+		c.Set("auth_id", user.AuthUUID)
 		return
 	}
 

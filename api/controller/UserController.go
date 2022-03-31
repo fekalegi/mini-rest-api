@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"github.com/google/uuid"
 	"github.com/labstack/echo/v4"
 	"github.com/labstack/echo/v4/middleware"
 	"mini-rest-api/api/middlewares"
@@ -25,6 +26,8 @@ func NewUserController(userService usecase.UserService) *userController {
 func (u *userController) Route(group *echo.Group) {
 	group.POST("/user/authentications", u.LoginAuth)
 	group.PUT("/user/authentications", u.RefreshAuth, middleware.KeyAuth(middlewares.AuthCheck))
+	group.POST("/users", u.AddUser)
+	group.DELETE("/user/authentications", u.DeleteAuth, middleware.KeyAuth(middlewares.AuthCheck))
 }
 
 // LoginAuth godoc
@@ -35,7 +38,7 @@ func (u *userController) Route(group *echo.Group) {
 // @Produce  json
 // @Param services body dto.RequestLogin true "Login Authentication"
 // @Success 200 {object} models.JSONResponsesSwaggerSucceed
-// @Router /authentications [post]
+// @Router /user/authentications [post]
 func (u *userController) LoginAuth(ctx echo.Context) error {
 	request := dto.RequestLogin{}
 	err := models.ValidateRequest(ctx, &request)
@@ -58,7 +61,7 @@ func (u *userController) LoginAuth(ctx echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} models.JSONResponsesSwaggerSucceed
-// @Router /authentications [put]
+// @Router /user/authentications [put]
 func (u *userController) RefreshAuth(ctx echo.Context) error {
 	userID := ctx.Get("user_id")
 	conv, err := strconv.Atoi(fmt.Sprint(userID))
@@ -66,7 +69,65 @@ func (u *userController) RefreshAuth(ctx echo.Context) error {
 		return err
 	}
 
-	result, err := u.userService.RefreshToken(conv)
+	tempAuthID := ctx.Get("auth_id")
+	authID, err := uuid.Parse(fmt.Sprint(tempAuthID))
+	if err != nil {
+		return err
+	}
+
+	result, err := u.userService.RefreshToken(conv, authID)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(result.Code, result)
+}
+
+// AddUser godoc
+// @Summary Add User
+// @Description This endpoint for Add User
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Param services body dto.RequestAddUser true "Login Authentication"
+// @Success 200 {object} models.JSONResponsesSwaggerSucceed
+// @Router /users [post]
+func (u *userController) AddUser(ctx echo.Context) error {
+	request := dto.RequestAddUser{}
+	err := models.ValidateRequest(ctx, &request)
+
+	if err != nil {
+		return err
+	}
+
+	result, err := u.userService.AddUser(request)
+	if err != nil {
+		return err
+	}
+	return ctx.JSON(result.Code, result)
+}
+
+// DeleteAuth godoc
+// @Summary Delete Authentication
+// @Description This endpoint for Delete Authentication
+// @Tags User
+// @Accept  json
+// @Produce  json
+// @Success 200 {object} models.JSONResponsesSwaggerSucceed
+// @Router /user/authentications [put]
+func (u *userController) DeleteAuth(ctx echo.Context) error {
+	userID := ctx.Get("user_id")
+	conv, err := strconv.Atoi(fmt.Sprint(userID))
+	if err != nil {
+		return err
+	}
+
+	tempAuthID := ctx.Get("auth_id")
+	authID, err := uuid.Parse(fmt.Sprint(tempAuthID))
+	if err != nil {
+		return err
+	}
+
+	result, err := u.userService.DeleteAuth(conv, authID)
 	if err != nil {
 		return err
 	}

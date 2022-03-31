@@ -1,13 +1,14 @@
 package user
 
 import (
+	"github.com/google/uuid"
 	"mini-rest-api/common/command"
 	"mini-rest-api/common/dto"
 	"strconv"
 )
 
-func (u userImplementation) RefreshToken(userID int) (dto.JsonResponses, error) {
-	user, err := u.repo.FindUserByID(userID)
+func (u userImplementation) RefreshToken(userID int, authID uuid.UUID) (dto.JsonResponses, error) {
+	user, err := u.repo.FindUserByIDAndAuthID(userID, authID)
 	if user == nil && err == nil {
 		return command.NotFoundResponses("User not found"), nil
 	} else if err != nil {

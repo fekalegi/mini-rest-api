@@ -1,6 +1,7 @@
 package user
 
 import (
+	"github.com/google/uuid"
 	"mini-rest-api/common/command"
 	"mini-rest-api/common/dto"
 	"strconv"
@@ -20,13 +21,25 @@ func (u userImplementation) CheckLogin(username string, password string) (dto.Js
 		return command.InternalServerResponses(errCreateToken.Error()), err
 	}
 
-	refreshToken, errCreateToken := u.helper.CreateRefreshJwtTokenLogin(conv)
+	authID := uuid.New()
+	err = u.repo.UpdateAuthUUID(user.ID, authID)
+	if err != nil {
+		return command.InternalServerResponses("Internal Server Error"), nil
+	}
+
+	refreshToken, errCreateToken := u.helper.CreateRefreshJwtTokenLogin(conv, authID)
 	if errCreateToken != nil {
 		return command.InternalServerResponses(errCreateToken.Error()), err
 	}
+
 	response := dto.ResponseLogin{
 		RefreshToken: refreshToken,
 		AccessToken:  token,
 	}
-	return command.SuccessResponses(response), nil
+
+	return dto.JsonResponses{
+		Status: "success",
+		Data:   response,
+		Code:   201,
+	}, nil
 }

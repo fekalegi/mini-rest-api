@@ -19,3 +19,7 @@ type RequestLogin struct {
 	Username string `json:"username"`
 	Password string `json:"password"`
 }
+
+type ResponseAddUser struct {
+	UserID int `json:"user_id"`
+}
