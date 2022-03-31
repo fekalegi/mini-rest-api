@@ -25,9 +25,9 @@ func NewUserController(userService usecase.UserService) *userController {
 // Route : Setting User Route
 func (u *userController) Route(group *echo.Group) {
 	group.POST("/user/authentications", u.LoginAuth)
-	group.PUT("/user/authentications", u.RefreshAuth, middleware.KeyAuth(middlewares.AuthCheck))
+	group.PUT("/user/authentications", u.RefreshAuth, middleware.KeyAuth(middlewares.RefreshCheck))
 	group.POST("/users", u.AddUser)
-	group.DELETE("/user/authentications", u.DeleteAuth, middleware.KeyAuth(middlewares.AuthCheck))
+	group.DELETE("/user/authentications", u.DeleteAuth, middleware.KeyAuth(middlewares.RefreshCheck))
 }
 
 // LoginAuth godoc

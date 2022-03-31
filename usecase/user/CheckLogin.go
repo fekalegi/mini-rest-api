@@ -15,16 +15,16 @@ func (u userImplementation) CheckLogin(username string, password string) (dto.Js
 		return command.InternalServerResponses("Internal server error"), nil
 	}
 
-	conv := strconv.Itoa(user.ID)
-	token, errCreateToken := u.helper.CreateJwtTokenLogin(conv, user.Username)
-	if errCreateToken != nil {
-		return command.InternalServerResponses(errCreateToken.Error()), err
-	}
-
 	authID := uuid.New()
 	err = u.repo.UpdateAuthUUID(user.ID, authID)
 	if err != nil {
 		return command.InternalServerResponses("Internal Server Error"), nil
+	}
+	conv := strconv.Itoa(user.ID)
+
+	token, errCreateToken := u.helper.CreateJwtTokenLogin(conv, user.Username, authID)
+	if errCreateToken != nil {
+		return command.InternalServerResponses(errCreateToken.Error()), err
 	}
 
 	refreshToken, errCreateToken := u.helper.CreateRefreshJwtTokenLogin(conv, authID)
