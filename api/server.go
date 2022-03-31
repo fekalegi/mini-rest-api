@@ -8,6 +8,7 @@ import (
 	"mini-rest-api/common/helper"
 	external "mini-rest-api/infra"
 	"mini-rest-api/repository/postgres"
+	"mini-rest-api/usecase/note"
 	"mini-rest-api/usecase/user"
 	"net/http"
 	"time"
@@ -33,9 +34,14 @@ func (server *Server) InitializeServer() {
 	userUC := user.NewUserImplementation(repoUser, helperInterface)
 	userController := controller.NewUserController(userUC)
 
+	repoNote := postgres.NewNoteRepository(newDB)
+	noteUC := note.NewNoteImplementation(repoNote)
+	noteController := controller.NewNoteController(noteUC)
+
 	apiGroup := server.Route.Group("/api")
 
 	userController.Route(apiGroup)
+	noteController.Route(apiGroup)
 
 	server.Route.GET("/swagger/*", echoSwagger.WrapHandler)
 
