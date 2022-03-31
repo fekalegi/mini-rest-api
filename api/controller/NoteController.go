@@ -36,7 +36,7 @@ func (n *noteController) Route(group *echo.Group) {
 // @Tags Note
 // @Accept  json
 // @Produce  json
-// @Param services body dto.RequestNoteDto true "Create new note"
+// @Param services body dto.RequestNote true "Create new note"
 // @Success 200 {object} models.JSONResponsesSwaggerSucceed
 // @Router /notes/ [post]
 func (n *noteController) CreateNote(ctx echo.Context) error {
@@ -62,8 +62,8 @@ func (n *noteController) CreateNote(ctx echo.Context) error {
 	return ctx.JSON(responses.Code, responses)
 }
 
-// FetchAllNote : Fetch All Product Category
-// @Summary Fetch All Product Category
+// FetchAllNote : Fetch All Note
+// @Summary Fetch All Note
 // @Description This endpoint for fetch all product category
 // @Tags Note
 // @Accept  json
@@ -79,8 +79,8 @@ func (n *noteController) FetchAllNote(ctx echo.Context) error {
 	return ctx.JSON(responses.Code, responses)
 }
 
-// FetchNote : Fetch Product Category by ID
-// @Summary Fetch Product Category by ID
+// FetchNote : Fetch Note by ID
+// @Summary Fetch Note by ID
 // @Description This endpoint for fetch product category by ID
 // @Tags Note
 // @Accept  json
@@ -102,13 +102,14 @@ func (n *noteController) FetchNote(ctx echo.Context) error {
 	return ctx.JSON(responses.Code, responses)
 }
 
-// UpdateNote : Update Product Category by ID
-// @Summary Update Product Category by ID
+// UpdateNote : Update Note by ID
+// @Summary Update Note by ID
 // @Description This endpoint for Update product category by ID
 // @Tags Note
 // @Accept  json
 // @Produce  json
 // @Param id path string true "Note ID"
+// @Param services body dto.RequestNote true "Create new note"
 // @Success 200 {object} models.JSONResponsesSwaggerSucceed{data=domain.Note} "desc"
 // @Router /notes/{id} [put]
 func (n *noteController) UpdateNote(ctx echo.Context) error {
@@ -139,8 +140,8 @@ func (n *noteController) UpdateNote(ctx echo.Context) error {
 	return ctx.JSON(responses.Code, responses)
 }
 
-// DeleteNote : Delete Product Category by ID
-// @Summary Delete Product Category by ID
+// DeleteNote : Delete Note by ID
+// @Summary Delete Note by ID
 // @Description This endpoint for Delete product category by ID
 // @Tags Note
 // @Accept  json
@@ -157,14 +158,6 @@ func (n *noteController) DeleteNote(ctx echo.Context) error {
 
 	userID := ctx.Get("user_id")
 	conv, err := strconv.Atoi(fmt.Sprint(userID))
-	if err != nil {
-		return err
-	}
-
-	request := dto.RequestNote{}
-
-	err = models.ValidateRequest(ctx, &request)
-
 	if err != nil {
 		return err
 	}
