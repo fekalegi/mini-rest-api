@@ -113,7 +113,7 @@ func (u *userController) AddUser(ctx echo.Context) error {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} models.JSONResponsesSwaggerSucceed
-// @Router /user/authentications [put]
+// @Router /user/authentications [delete]
 func (u *userController) DeleteAuth(ctx echo.Context) error {
 	userID := ctx.Get("user_id")
 	conv, err := strconv.Atoi(fmt.Sprint(userID))

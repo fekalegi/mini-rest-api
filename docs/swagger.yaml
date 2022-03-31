@@ -202,6 +202,20 @@ paths:
       tags:
       - Note
   /user/authentications:
+    delete:
+      consumes:
+      - application/json
+      description: This endpoint for Delete Authentication
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.JSONResponsesSwaggerSucceed'
+      summary: Delete Authentication
+      tags:
+      - User
     post:
       consumes:
       - application/json
@@ -226,7 +240,7 @@ paths:
     put:
       consumes:
       - application/json
-      description: This endpoint for Delete Authentication
+      description: This endpoint for Refresh Authentication
       produces:
       - application/json
       responses:
@@ -234,7 +248,7 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/models.JSONResponsesSwaggerSucceed'
-      summary: Delete Authentication
+      summary: Refresh Authentication
       tags:
       - User
   /users:

@@ -235,7 +235,7 @@ const docTemplate = `{
         },
         "/user/authentications": {
             "put": {
-                "description": "This endpoint for Delete Authentication",
+                "description": "This endpoint for Refresh Authentication",
                 "consumes": [
                     "application/json"
                 ],
@@ -245,7 +245,7 @@ const docTemplate = `{
                 "tags": [
                     "User"
                 ],
-                "summary": "Delete Authentication",
+                "summary": "Refresh Authentication",
                 "responses": {
                     "200": {
                         "description": "OK",
@@ -278,6 +278,27 @@ const docTemplate = `{
                         }
                     }
                 ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/models.JSONResponsesSwaggerSucceed"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "This endpoint for Delete Authentication",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "User"
+                ],
+                "summary": "Delete Authentication",
                 "responses": {
                     "200": {
                         "description": "OK",
